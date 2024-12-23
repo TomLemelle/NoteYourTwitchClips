@@ -8,6 +8,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        "twitch-color": "#243c5a",
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
