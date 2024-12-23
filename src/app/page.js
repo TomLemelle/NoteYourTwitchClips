@@ -12,6 +12,7 @@ export default function Home() {
   const [ratings, setRatings] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [nextCursor, setNextCursor] = useState(null); // Pour gérer la pagination
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const CLIENT_ID = "t9nbo6xst4lr18fjb84frps1lsp4j8";
@@ -45,12 +46,19 @@ export default function Home() {
     return data.access_token;
   };
 
-  const fetchClips = async () => {
+  const fetchClips = async (loadMore = false) => {
     if (!streamerName) return alert("Veuillez entrer un nom de streamer.");
-    setClips([]);
+
+    if (streamerName) {
+      setClips([]);
+      setNextCursor(null); // Réinitialiser la pagination
+      setShowLeaderboard(false); // Réinitialiser l'affichage du leaderboard
+      localStorage.removeItem("ratings");
+      setRatings({}); // Réinitialiser les notes
+    }
+
     setLoading(true);
     setError(null);
-    localStorage.removeItem("rating");
 
     try {
       const ACCESS_TOKEN = await getAccessToken();
@@ -73,20 +81,23 @@ export default function Home() {
       }
 
       const broadcasterId = userData.data[0].id;
-      const clipsResponse = await fetch(
-        `${API_BASE_URL}/clips?broadcaster_id=${broadcasterId}&first=10`,
-        {
-          headers: {
-            Authorization: `Bearer ${ACCESS_TOKEN}`,
-            "Client-Id": CLIENT_ID,
-          },
-        }
-      );
+      let clipsURL = `${API_BASE_URL}/clips?broadcaster_id=${broadcasterId}&first=10`;
+      if (loadMore && nextCursor) {
+        clipsURL += `&after=${nextCursor}`;
+      }
+
+      const clipsResponse = await fetch(clipsURL, {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+          "Client-Id": CLIENT_ID,
+        },
+      });
 
       const clipsData = await clipsResponse.json();
 
       if (clipsData.data) {
-        setClips(clipsData.data);
+        setClips((prevClips) => [...prevClips, ...clipsData.data]);
+        setNextCursor(clipsData.pagination?.cursor || null);
       } else {
         setError("Aucun clip trouvé pour ce streamer.");
       }
@@ -135,16 +146,26 @@ export default function Home() {
         </div>
       )}
 
+      {/* Boutons "Charger plus" et "Terminer l'évaluation" côte à côte */}
       {clips.length > 0 && !showLeaderboard && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center gap-4 mt-6 fixed bottom-8 left-1/2 transform -translate-x-1/2">
+          {nextCursor && (
+            <button
+              onClick={() => fetchClips(true)}
+              className="bg-[#9146ff] text-white px-4 py-2 rounded hover:bg-purple-600"
+            >
+              {loading ? "Chargement..." : "Charger plus"}
+            </button>
+          )}
           <button
             onClick={() => setShowLeaderboard(true)}
-            className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#9146ff] text-white px-4 py-2 rounded hover:bg-purple-600"
+            className="bg-[#9146ff] text-white px-4 py-2 rounded hover:bg-purple-600"
           >
             Terminer l'évaluation
           </button>
         </div>
       )}
+
       <LinkedInTag />
     </div>
   );
