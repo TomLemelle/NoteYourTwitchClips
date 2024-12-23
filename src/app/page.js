@@ -49,7 +49,7 @@ export default function Home() {
   const fetchClips = async (loadMore = false) => {
     if (!streamerName) return alert("Veuillez entrer un nom de streamer.");
 
-    if (streamerName) {
+    if (!loadMore) {
       setClips([]);
       setNextCursor(null); // Réinitialiser la pagination
       setShowLeaderboard(false); // Réinitialiser l'affichage du leaderboard
@@ -125,7 +125,10 @@ export default function Home() {
       <SearchForm
         streamerName={streamerName}
         setStreamerName={setStreamerName}
-        onSearch={fetchClips}
+        onSearch={(event) => {
+          event.preventDefault(); // Empêche l'envoi du formulaire et le rechargement
+          fetchClips(); // Lance la recherche
+        }}
         loading={loading}
       />
 
@@ -151,7 +154,10 @@ export default function Home() {
         <div className="flex justify-center gap-4 mt-6 fixed bottom-8 left-1/2 transform -translate-x-1/2">
           {nextCursor && (
             <button
-              onClick={() => fetchClips(true)}
+              onClick={(event) => {
+                event.preventDefault(); // Empêche le comportement de soumission
+                fetchClips(true); // Charger plus de clips
+              }}
               className="bg-[#9146ff] text-white px-4 py-2 rounded hover:bg-purple-600"
             >
               {loading ? "Chargement..." : "Charger plus"}
