@@ -14,8 +14,8 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
-  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
-  const CLIENT_SECRET = process.env.NEXT_PUBLIC_CLIENT_SECRET;
+  const CLIENT_ID = "t9nbo6xst4lr18fjb84frps1lsp4j8";
+  const CLIENT_SECRET = "umiiyp0h6zr0pu8ilh4iwi4431i9jn";
   const API_BASE_URL = "https://api.twitch.tv/helix";
 
   // Charger les notes depuis le localStorage
