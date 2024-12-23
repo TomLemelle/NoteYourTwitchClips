@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import SearchForm from "./components/Searchform";
-import Leaderboard from "./components/LeaderBoard";
+import SearchForm from "./components/SearchForm";
+import Leaderboard from "./components/Leaderboard";
 import ClipCard from "./components/ClipCard";
 import LinkedInTag from "./components/LinkedInTag";
 

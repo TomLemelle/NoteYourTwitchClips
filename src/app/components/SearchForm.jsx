@@ -1,3 +1,5 @@
+import React from "react";
+
 const SearchForm = ({ streamerName, setStreamerName, onSearch, loading }) => {
   return (
     <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-6">

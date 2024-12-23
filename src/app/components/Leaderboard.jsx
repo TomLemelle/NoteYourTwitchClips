@@ -1,3 +1,5 @@
+import React from "react";
+
 const Leaderboard = ({ clips, ratings }) => {
   const sortedClips = [...clips].sort(
     (a, b) => (ratings[b.id] || 0) - (ratings[a.id] || 0)

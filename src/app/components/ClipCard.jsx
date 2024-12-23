@@ -1,3 +1,5 @@
+import React from "react";
+
 const ClipCard = ({ clip, rating, onRate }) => {
   return (
     <div className="bg-white shadow rounded-lg p-4">
